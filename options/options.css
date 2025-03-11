@@ -298,6 +298,7 @@ select:focus {
   width: 500px;
   max-width: 90%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
 }
 
 .modal h2 {
@@ -316,6 +317,7 @@ textarea {
   background-color: #f9f9f9;
   min-height: 150px;
   resize: vertical;
+  box-sizing: border-box;
 }
 
 textarea:focus {
