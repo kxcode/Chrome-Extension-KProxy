@@ -42,16 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // 绑定删除代理按钮事件
   document.getElementById('deleteProxyBtn').addEventListener('click', deleteProxyConfig);
   
-  // 绑定认证复选框事件
-  // document.getElementById('proxyAuth').addEventListener('change', function() {
-  //   const authFields = document.getElementById('authFields');
-  //   if (this.checked) {
-  //     authFields.style.display = 'block';
-  //   } else {
-  //     authFields.style.display = 'none';
-  //   }
-  // });
-  
   // 绑定导入按钮事件
   document.getElementById('importBtn').addEventListener('click', showImportModal);
   
@@ -132,9 +122,6 @@ function addProxyItemToList(config, proxyId, isActive, listElement) {
   } else {
     iconHtml = getProxyTypeIcon(config.type);
     infoHtml = `${config.type.toUpperCase()} - ${config.host}:${config.port}`;
-    if (config.auth) {
-      infoHtml += ' (需要认证)';
-    }
   }
   
   proxyItem.innerHTML = `
@@ -189,14 +176,6 @@ function showAddProxyForm() {
   document.getElementById('proxyType').value = 'http';
   document.getElementById('proxyHost').value = '';
   document.getElementById('proxyPort').value = '';
-  // document.getElementById('proxyAuth').checked = false;
-  
-  // 隐藏认证字段
-  const authFields = document.getElementById('authFields');
-  authFields.style.display = 'none';
-  document.getElementById('authType').value = 'basic';
-  document.getElementById('username').value = '';
-  document.getElementById('password').value = '';
   
   // 更新表单标题
   document.getElementById('formTitle').textContent = '添加代理';
@@ -241,12 +220,6 @@ function editProxy(proxyId) {
       }
     });
     
-    // 隐藏认证字段容器
-    const authFields = document.getElementById('authFields');
-    if (authFields) {
-      authFields.style.display = 'none';
-    }
-    
     // 显示说明文本
     const directInfoElement = document.createElement('div');
     directInfoElement.id = 'directConnectionInfo';
@@ -282,20 +255,6 @@ function editProxy(proxyId) {
     document.getElementById('proxyType').value = config.type;
     document.getElementById('proxyHost').value = config.host || '';
     document.getElementById('proxyPort').value = config.port || '';
-    
-    // const authCheckbox = document.getElementById('proxyAuth');
-    // authCheckbox.checked = config.auth || false;
-    
-    // 显示/隐藏认证字段
-    const authFields = document.getElementById('authFields');
-    if (config.auth) {
-      authFields.style.display = 'block';
-      document.getElementById('authType').value = config.authType || 'basic';
-      document.getElementById('username').value = config.username || '';
-      document.getElementById('password').value = config.password || '';
-    } else {
-      authFields.style.display = 'none';
-    }
     
     // 显示删除按钮
     document.getElementById('deleteProxyBtn').classList.remove('hidden');
@@ -335,7 +294,6 @@ function saveProxyConfig() {
     const type = document.getElementById('proxyType').value;
     const host = document.getElementById('proxyHost').value;
     const port = document.getElementById('proxyPort').value;
-    // const auth = document.getElementById('proxyAuth').checked;
     
     if (type !== 'direct' && (!host || !port)) {
       alert('请输入服务器地址和端口');
@@ -345,18 +303,6 @@ function saveProxyConfig() {
     config.type = type;
     config.host = host;
     config.port = parseInt(port, 10);
-    config.auth = auth;
-    
-    if (auth) {
-      config.authType = document.getElementById('authType').value;
-      config.username = document.getElementById('username').value;
-      config.password = document.getElementById('password').value;
-      
-      if (!config.username || !config.password) {
-        alert('请输入用户名和密码');
-        return;
-      }
-    }
   }
   
   // 显示保存中提示
