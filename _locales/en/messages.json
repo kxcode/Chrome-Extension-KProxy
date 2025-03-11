@@ -1,0 +1,78 @@
+{
+    "appName": {
+      "message": "KProxy",
+      "description": "Extension name"
+    },
+    "appDesc": {
+      "message": "A clean and elegant Chrome proxy manager",
+      "description": "Extension description"
+    },
+    "directConnection": {
+      "message": "Direct Connection",
+      "description": "Direct connection option"
+    },
+    "addProxy": {
+      "message": "Add Proxy",
+      "description": "Add proxy button"
+    },
+    "editProxy": {
+      "message": "Edit Proxy",
+      "description": "Edit proxy title"
+    },
+    "proxyName": {
+      "message": "Name",
+      "description": "Proxy name label"
+    },
+    "proxyType": {
+      "message": "Proxy Type",
+      "description": "Proxy type label"
+    },
+    "proxyHost": {
+      "message": "Server Address",
+      "description": "Server address label"
+    },
+    "proxyPort": {
+      "message": "Port",
+      "description": "Port label"
+    },
+    "proxyAuth": {
+      "message": "Authentication Required",
+      "description": "Authentication checkbox label"
+    },
+    "authType": {
+      "message": "Authentication Type",
+      "description": "Authentication type label"
+    },
+    "username": {
+      "message": "Username",
+      "description": "Username label"
+    },
+    "password": {
+      "message": "Password",
+      "description": "Password label"
+    },
+    "save": {
+      "message": "Save",
+      "description": "Save button"
+    },
+    "cancel": {
+      "message": "Cancel",
+      "description": "Cancel button"
+    },
+    "delete": {
+      "message": "Delete",
+      "description": "Delete button"
+    },
+    "import": {
+      "message": "Import",
+      "description": "Import button"
+    },
+    "export": {
+      "message": "Export",
+      "description": "Export button"
+    },
+    "options": {
+      "message": "Options",
+      "description": "Options button"
+    }
+  } 

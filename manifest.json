@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "KProxy",
+  "version": "1.0.0",
+  "description": "一个简洁优雅的 Chrome 代理管理工具",
+  "author": "KINGX",
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "options_page": "options/options.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "proxy",
+    "storage",
+    "notifications"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "default_locale": "zh_CN"
+} 

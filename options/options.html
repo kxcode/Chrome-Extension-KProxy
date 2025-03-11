@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>KProxy - 选项</title>
+  <link rel="stylesheet" href="options.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>KProxy</h1>
+      <div class="actions">
+        <button id="importBtn">导入</button>
+        <button id="exportBtn">导出</button>
+      </div>
+    </header>
+    
+    <div class="main-content">
+      <div class="sidebar">
+        <div class="proxy-list">
+          <div class="loading">加载中...</div>
+        </div>
+        <button id="addProxyBtn" class="add-btn">添加代理</button>
+      </div>
+      
+      <div class="content">
+        <div id="proxyForm" class="proxy-form hidden">
+          <h2 id="formTitle">添加代理</h2>
+          
+          <div class="form-group">
+            <label for="proxyName">名称</label>
+            <input type="text" id="proxyName" placeholder="输入代理名称">
+          </div>
+          
+          <div class="form-group">
+            <label for="proxyType">代理类型</label>
+            <select id="proxyType">
+              <option value="http">HTTP</option>
+              <option value="https">HTTPS</option>
+              <option value="socks5">SOCKS5</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="proxyHost">服务器地址</label>
+            <input type="text" id="proxyHost" placeholder="例如: proxy.example.com">
+          </div>
+          
+          <div class="form-group">
+            <label for="proxyPort">端口</label>
+            <input type="number" id="proxyPort" placeholder="例如: 8080">
+          </div>
+          
+          <div class="form-group">
+            <div class="checkbox-container">
+              <input type="checkbox" id="proxyAuth">
+              <label for="proxyAuth">需要认证</label>
+            </div>
+          </div>
+          
+          <div id="authFields" class="auth-fields">
+            <div class="form-group">
+              <label for="authType">认证类型</label>
+              <select id="authType">
+                <option value="basic">Basic</option>
+                <option value="digest">Digest</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="username">用户名</label>
+              <input type="text" id="username" placeholder="输入用户名">
+            </div>
+            
+            <div class="form-group">
+              <label for="password">密码</label>
+              <input type="password" id="password" placeholder="输入密码">
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button id="saveProxyBtn">保存</button>
+            <button id="cancelBtn">取消</button>
+            <button id="deleteProxyBtn" class="delete-btn hidden">删除</button>
+          </div>
+        </div>
+        
+        <div id="welcomeMessage" class="welcome-message">
+          <h2>欢迎使用 KProxy</h2>
+          <p>请从左侧选择一个代理配置进行编辑，或者添加一个新的代理配置。</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <span>KProxy v1.0.0 | 由 <a href="#" id="authorLink">KINGX</a> 精心设计</span>
+    </div>
+  </div>
+  
+  <div id="importModal" class="modal hidden" style="display: none;">
+    <div class="modal-content">
+      <h2>导入代理配置</h2>
+      <p>请粘贴 JSON 格式的代理配置：</p>
+      <textarea id="importData" rows="10" placeholder='{"proxy1": {"name": "示例代理", "type": "http", "host": "proxy.example.com", "port": 8080}}'></textarea>
+      <div class="modal-actions">
+        <button id="confirmImportBtn">导入</button>
+        <button id="cancelImportBtn">取消</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html> 

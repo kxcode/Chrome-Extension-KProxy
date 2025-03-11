@@ -1,0 +1,78 @@
+{
+    "appName": {
+      "message": "KProxy",
+      "description": "扩展名称"
+    },
+    "appDesc": {
+      "message": "一个简洁优雅的 Chrome 代理管理工具",
+      "description": "扩展描述"
+    },
+    "directConnection": {
+      "message": "直接连接",
+      "description": "直接连接选项"
+    },
+    "addProxy": {
+      "message": "添加代理",
+      "description": "添加代理按钮"
+    },
+    "editProxy": {
+      "message": "编辑代理",
+      "description": "编辑代理标题"
+    },
+    "proxyName": {
+      "message": "名称",
+      "description": "代理名称标签"
+    },
+    "proxyType": {
+      "message": "代理类型",
+      "description": "代理类型标签"
+    },
+    "proxyHost": {
+      "message": "服务器地址",
+      "description": "服务器地址标签"
+    },
+    "proxyPort": {
+      "message": "端口",
+      "description": "端口标签"
+    },
+    "proxyAuth": {
+      "message": "需要认证",
+      "description": "认证复选框标签"
+    },
+    "authType": {
+      "message": "认证类型",
+      "description": "认证类型标签"
+    },
+    "username": {
+      "message": "用户名",
+      "description": "用户名标签"
+    },
+    "password": {
+      "message": "密码",
+      "description": "密码标签"
+    },
+    "save": {
+      "message": "保存",
+      "description": "保存按钮"
+    },
+    "cancel": {
+      "message": "取消",
+      "description": "取消按钮"
+    },
+    "delete": {
+      "message": "删除",
+      "description": "删除按钮"
+    },
+    "import": {
+      "message": "导入",
+      "description": "导入按钮"
+    },
+    "export": {
+      "message": "导出",
+      "description": "导出按钮"
+    },
+    "options": {
+      "message": "选项",
+      "description": "选项按钮"
+    }
+  } 

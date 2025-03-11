@@ -1,0 +1,433 @@
+body {
+    font-family: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fafafa;
+    color: #424242;
+    line-height: 1.5;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+    color: #6b7cff;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+  }
+  
+  h1::before {
+    content: '';
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background-color: #6b7cff;
+    border-radius: 50%;
+    margin-right: 12px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="18px" height="18px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 12px;
+  }
+  
+  button {
+    background-color: #6b7cff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(107, 124, 255, 0.2);
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+  }
+  
+  button:hover {
+    background-color: #5a6bff;
+    box-shadow: 0 4px 8px rgba(107, 124, 255, 0.3);
+  }
+  
+  button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(107, 124, 255, 0.2);
+  }
+  
+  .main-content {
+    display: flex;
+    gap: 24px;
+  }
+  
+  .sidebar {
+    width: 300px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    height: fit-content;
+  }
+  
+  .content {
+    flex-grow: 1;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+  }
+  
+  .proxy-list {
+    margin-bottom: 16px;
+  }
+  
+  .proxy-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .proxy-item:hover {
+    background-color: #f8f9ff;
+    border-color: #d4daff;
+  }
+  
+  .proxy-item.active {
+    background-color: #f0f4ff;
+    border-color: #d4daff;
+    box-shadow: 0 1px 3px rgba(107, 124, 255, 0.2);
+  }
+  
+  .proxy-item-icon {
+    margin-right: 12px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f7ff;
+    border-radius: 50%;
+    font-size: 16px;
+  }
+  
+  .proxy-item.active .proxy-item-icon {
+    background-color: #e0e6ff;
+  }
+  
+  .proxy-item-details {
+    flex-grow: 1;
+  }
+  
+  .proxy-name {
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #424242;
+  }
+  
+  .proxy-info {
+    font-size: 12px;
+    color: #757575;
+  }
+  
+  .add-btn {
+    background-color: #6bbd6e;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .add-btn:hover {
+    background-color: #5aac5d;
+  }
+  
+  .proxy-form {
+    width: 100%;
+  }
+  
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: #424242;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  /* 更新表单样式，使其更加整齐统一 */
+  .form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #424242;
+    font-size: 14px;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  input[type="password"],
+  select {
+    padding: 10px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    background-color: #f9f9f9;
+  }
+  
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  input[type="password"]:focus,
+  select:focus {
+    outline: none;
+    border-color: #6b7cff;
+    box-shadow: 0 0 0 2px rgba(107, 124, 255, 0.1);
+    background-color: white;
+  }
+  
+  /* 复选框容器样式 */
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+  }
+  
+  /* 复选框标签样式 */
+  .checkbox-container label {
+    margin-bottom: 0;
+    margin-left: 8px;
+    cursor: pointer;
+  }
+  
+  /* 复选框样式 */
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #6b7cff;
+  }
+  
+  /* 认证字段容器 */
+  .auth-fields {
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+    margin-top: 8px;
+    border: 1px solid #e0e0e0;
+    display: none; /* 默认隐藏，但会通过 JavaScript 控制显示 */
+  }
+  
+  /* 表单操作按钮区域 */
+  .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-start;
+  }
+  
+  /* 删除按钮样式 */
+  .delete-btn {
+    background-color: #ff6b6b;
+    margin-left: auto;
+  }
+  
+  .delete-btn:hover {
+    background-color: #ff5252;
+  }
+  
+  .welcome-message {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .welcome-message h2 {
+    border-bottom: none;
+    margin-bottom: 16px;
+  }
+  
+  .welcome-message p {
+    color: #757575;
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 24px;
+    color: #757575;
+    font-size: 14px;
+  }
+  
+  .loading::after {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 24px;
+    margin: 12px auto 0;
+    border-radius: 50%;
+    border: 2px solid #6b7cff;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 24px;
+    border-radius: 12px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .modal h2 {
+    margin-top: 0;
+    color: #6b7cff;
+    border-bottom: none;
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: monospace;
+    background-color: #f9f9f9;
+    min-height: 150px;
+    resize: vertical;
+  }
+  
+  textarea:focus {
+    outline: none;
+    border-color: #6b7cff;
+    box-shadow: 0 0 0 2px rgba(107, 124, 255, 0.1);
+    background-color: white;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  .modal.hidden {
+    display: none !important;
+  }
+  
+  #importBtn::before {
+    content: '↓';
+    margin-right: 8px;
+  }
+  
+  #exportBtn::before {
+    content: '↑';
+    margin-right: 8px;
+  }
+  
+  .footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+    color: #9e9e9e;
+    font-size: 12px;
+  }
+  
+  .footer a {
+    color: #6b7cff;
+    text-decoration: none;
+  }
+  
+  .footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .main-content {
+      flex-direction: column;
+    }
+    
+    .sidebar {
+      width: 100%;
+    }
+  }
+  
+  /* 直接连接信息样式 */
+  .direct-connection-info {
+    background-color: #f0f4ff;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 20px 0;
+    border: 1px solid #d4daff;
+  }
+  
+  .direct-connection-info p {
+    margin: 0 0 12px 0;
+    color: #5f6368;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .direct-connection-info p:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* 隐藏类 */
+  .hidden {
+    display: none !important;
+  } 
