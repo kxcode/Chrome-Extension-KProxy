@@ -43,14 +43,14 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('deleteProxyBtn').addEventListener('click', deleteProxyConfig);
   
   // 绑定认证复选框事件
-  document.getElementById('proxyAuth').addEventListener('change', function() {
-    const authFields = document.getElementById('authFields');
-    if (this.checked) {
-      authFields.style.display = 'block';
-    } else {
-      authFields.style.display = 'none';
-    }
-  });
+  // document.getElementById('proxyAuth').addEventListener('change', function() {
+  //   const authFields = document.getElementById('authFields');
+  //   if (this.checked) {
+  //     authFields.style.display = 'block';
+  //   } else {
+  //     authFields.style.display = 'none';
+  //   }
+  // });
   
   // 绑定导入按钮事件
   document.getElementById('importBtn').addEventListener('click', showImportModal);
