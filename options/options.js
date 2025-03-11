@@ -189,7 +189,7 @@ function showAddProxyForm() {
   document.getElementById('proxyType').value = 'http';
   document.getElementById('proxyHost').value = '';
   document.getElementById('proxyPort').value = '';
-  document.getElementById('proxyAuth').checked = false;
+  // document.getElementById('proxyAuth').checked = false;
   
   // 隐藏认证字段
   const authFields = document.getElementById('authFields');
@@ -283,8 +283,8 @@ function editProxy(proxyId) {
     document.getElementById('proxyHost').value = config.host || '';
     document.getElementById('proxyPort').value = config.port || '';
     
-    const authCheckbox = document.getElementById('proxyAuth');
-    authCheckbox.checked = config.auth || false;
+    // const authCheckbox = document.getElementById('proxyAuth');
+    // authCheckbox.checked = config.auth || false;
     
     // 显示/隐藏认证字段
     const authFields = document.getElementById('authFields');
@@ -335,7 +335,7 @@ function saveProxyConfig() {
     const type = document.getElementById('proxyType').value;
     const host = document.getElementById('proxyHost').value;
     const port = document.getElementById('proxyPort').value;
-    const auth = document.getElementById('proxyAuth').checked;
+    // const auth = document.getElementById('proxyAuth').checked;
     
     if (type !== 'direct' && (!host || !port)) {
       alert('请输入服务器地址和端口');
