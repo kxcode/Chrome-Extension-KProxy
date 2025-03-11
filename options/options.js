@@ -407,13 +407,17 @@ function deleteProxyConfig() {
 
 // 显示导入模态框
 function showImportModal() {
-  document.getElementById('importModal').classList.remove('hidden');
+  const importModal = document.getElementById('importModal');
+  importModal.classList.remove('hidden');
+  importModal.style.display = 'flex';
   document.getElementById('importData').value = '';
 }
 
 // 隐藏导入模态框
 function hideImportModal() {
-  document.getElementById('importModal').classList.add('hidden');
+  const importModal = document.getElementById('importModal');
+  importModal.classList.add('hidden');
+  importModal.style.display = 'none';
 }
 
 // 导入配置
