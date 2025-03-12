@@ -1,5 +1,7 @@
 let currentProxyId = null;
+let activeProxyId = null;
 let proxyConfigs = {};
+let editingAutoProxyId = null;
 
 function initOptionsPage() {
   // 确保导入模态窗口默认隐藏
@@ -8,9 +10,21 @@ function initOptionsPage() {
     importModal.classList.add('hidden');
   }
   
+  // 确保规则模态窗口默认隐藏
+  const ruleModal = document.getElementById('ruleModal');
+  if (ruleModal) {
+    ruleModal.classList.add('hidden');
+  }
+  
   // 确保欢迎界面显示，表单隐藏
   document.getElementById('welcomeMessage').classList.remove('hidden');
   document.getElementById('proxyForm').classList.add('hidden');
+  
+  // 如果存在自动代理表单，也确保它隐藏
+  const autoProxyForm = document.getElementById('autoProxyForm');
+  if (autoProxyForm) {
+    autoProxyForm.classList.add('hidden');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -72,6 +86,54 @@ document.addEventListener('DOMContentLoaded', function() {
       chrome.tabs.create({ url: 'https://github.com/kxcode' });
     });
   }
+  
+  // 绑定添加自动代理按钮事件
+  const addAutoProxyBtn = document.getElementById('addAutoProxyBtn');
+  if (addAutoProxyBtn) {
+    addAutoProxyBtn.addEventListener('click', showAddAutoProxyForm);
+  }
+  
+  // 绑定保存自动代理按钮事件
+  const saveAutoProxyBtn = document.getElementById('saveAutoProxyBtn');
+  if (saveAutoProxyBtn) {
+    saveAutoProxyBtn.addEventListener('click', saveAutoProxyConfig);
+  }
+  
+  // 绑定取消自动代理按钮事件
+  const cancelAutoProxyBtn = document.getElementById('cancelAutoProxyBtn');
+  if (cancelAutoProxyBtn) {
+    cancelAutoProxyBtn.addEventListener('click', hideAutoProxyForm);
+  }
+  
+  // 绑定删除自动代理按钮事件
+  const deleteAutoProxyBtn = document.getElementById('deleteAutoProxyBtn');
+  if (deleteAutoProxyBtn) {
+    deleteAutoProxyBtn.addEventListener('click', deleteAutoProxyConfig);
+  }
+  
+  // 绑定添加规则按钮事件
+  const addRuleBtn = document.getElementById('addRuleBtn');
+  if (addRuleBtn) {
+    addRuleBtn.addEventListener('click', showAddRuleModal);
+  }
+  
+  // 绑定保存规则按钮事件
+  const saveRuleBtn = document.getElementById('saveRuleBtn');
+  if (saveRuleBtn) {
+    saveRuleBtn.addEventListener('click', saveRule);
+  }
+  
+  // 绑定取消规则按钮事件
+  const cancelRuleBtn = document.getElementById('cancelRuleBtn');
+  if (cancelRuleBtn) {
+    cancelRuleBtn.addEventListener('click', hideRuleModal);
+  }
+  
+  // 绑定导入规则按钮事件
+  const importRulesBtn = document.getElementById('importRulesBtn');
+  if (importRulesBtn) {
+    importRulesBtn.addEventListener('click', importRules);
+  }
 });
 
 // 加载代理配置
@@ -79,6 +141,7 @@ function loadProxyConfigs() {
   chrome.runtime.sendMessage({ action: 'getProxyConfigs' }, function(response) {
     proxyConfigs = response.proxyConfigs;
     const activeProxy = response.activeProxy;
+    activeProxyId = activeProxy;
     
     const proxyListElement = document.querySelector('.proxy-list');
     proxyListElement.innerHTML = '';
@@ -111,6 +174,12 @@ function loadProxyConfigs() {
 function addProxyItemToList(config, proxyId, isActive, listElement) {
   const proxyItem = document.createElement('div');
   proxyItem.className = `proxy-item ${isActive ? 'active' : ''}`;
+  
+  // 添加自动代理类标识
+  if (config.type === 'auto') {
+    proxyItem.className += ' auto-proxy';
+  }
+  
   proxyItem.dataset.proxyId = proxyId;
   
   let iconHtml = '';
@@ -119,13 +188,16 @@ function addProxyItemToList(config, proxyId, isActive, listElement) {
   if (config.type === 'direct') {
     iconHtml = '<span>🔗</span>';
     infoHtml = '直接连接到互联网';
+  } else if (config.type === 'auto') {
+    iconHtml = '<span>🔌</span>';
+    infoHtml = '自动切换规则';
   } else {
     iconHtml = getProxyTypeIcon(config.type);
     infoHtml = `${config.type.toUpperCase()} - ${config.host}:${config.port}`;
   }
   
   proxyItem.innerHTML = `
-    <div class="proxy-item-icon">${iconHtml}</div>
+    <div class="proxy-item-icon ${config.type === 'auto' ? 'auto' : ''}">${iconHtml}</div>
     <div class="proxy-item-details">
       <div class="proxy-name">${config.name}</div>
       <div class="proxy-info">${infoHtml}</div>
@@ -134,7 +206,11 @@ function addProxyItemToList(config, proxyId, isActive, listElement) {
   
   // 点击编辑代理
   proxyItem.addEventListener('click', function() {
-    editProxy(proxyId);
+    if (config.type === 'auto') {
+      editAutoProxy(proxyId);
+    } else {
+      editProxy(proxyId);
+    }
   });
   
   listElement.appendChild(proxyItem);
@@ -196,43 +272,42 @@ function editProxy(proxyId) {
   const config = proxyConfigs[proxyId];
   if (!config) return;
   
+  // 如果是自动代理类型，调用自动代理编辑函数
+  if (config.type === 'auto') {
+    editAutoProxy(proxyId);
+    return;
+  }
+  
   // 设置当前编辑的代理ID
   currentProxyId = proxyId;
   
-  // 更新表单标题
+  // 设置表单标题
   document.getElementById('formTitle').textContent = '编辑代理';
   
-  // 如果是直接连接选项，显示特殊表单
-  if (proxyId === 'direct' || config.type === 'direct') {
-    // 更新表单标题
-    document.getElementById('formTitle').textContent = '直接连接设置';
-    
-    // 填充表单数据
-    document.getElementById('proxyName').value = config.name || '直接连接';
-    
-    // 隐藏除了第一个表单组（名称）之外的所有表单组
+  // 如果是直接连接
+  if (config.type === 'direct') {
+    // 隐藏不需要的表单组
     const formGroups = document.querySelectorAll('.form-group');
     formGroups.forEach((group, index) => {
-      if (index === 0) {
-        group.style.display = 'flex'; // 确保名称字段显示
-      } else {
-        group.style.display = 'none'; // 隐藏其他所有字段
+      if (index > 0) { // 保留名称字段
+        group.style.display = 'none';
       }
     });
     
-    // 显示说明文本
-    const directInfoElement = document.createElement('div');
-    directInfoElement.id = 'directConnectionInfo';
-    directInfoElement.className = 'direct-connection-info';
-    directInfoElement.innerHTML = `
-      <p>直接连接模式下，浏览器将不使用任何代理服务器，直接连接到目标网站。</p>
-      <p>您可以修改此选项的显示名称，但无法更改其他设置。</p>
-    `;
+    // 填充名称
+    document.getElementById('proxyName').value = config.name;
     
-    // 检查是否已存在说明文本，如果不存在则添加
+    // 添加直接连接说明文本
+    const formElement = document.getElementById('proxyForm');
     if (!document.getElementById('directConnectionInfo')) {
-      const formElement = document.getElementById('proxyForm');
-      formElement.insertBefore(directInfoElement, document.querySelector('.form-actions'));
+      const infoElement = document.createElement('div');
+      infoElement.id = 'directConnectionInfo';
+      infoElement.className = 'direct-connection-info';
+      infoElement.innerHTML = `
+        <p>直接连接模式下，浏览器将不使用任何代理服务器，直接连接到互联网。</p>
+        <p>这是浏览器的默认连接方式。</p>
+      `;
+      formElement.insertBefore(infoElement, document.querySelector('.form-actions'));
     }
     
     // 隐藏删除按钮
@@ -263,6 +338,12 @@ function editProxy(proxyId) {
   // 显示表单
   document.getElementById('proxyForm').classList.remove('hidden');
   document.getElementById('welcomeMessage').classList.add('hidden');
+  
+  // 如果存在自动代理表单，确保它隐藏
+  const autoProxyForm = document.getElementById('autoProxyForm');
+  if (autoProxyForm) {
+    autoProxyForm.classList.add('hidden');
+  }
 }
 
 // 隐藏代理表单
@@ -339,6 +420,14 @@ function saveProxyConfig() {
         }
         
         if (response && response.success) {
+          // 检查是否需要刷新当前激活的代理
+          if (activeProxyId === currentProxyId) {
+            chrome.runtime.sendMessage({
+              action: 'setActiveProxy',
+              proxyId: currentProxyId
+            });
+          }
+          
           // 重新加载代理配置
           loadProxyConfigs();
           // 隐藏表单
@@ -471,4 +560,441 @@ function exportConfigs() {
       URL.revokeObjectURL(url);
     }
   });
+}
+
+// 添加规则到列表
+function addRuleToList(rule) {
+  const ruleList = document.getElementById('ruleList');
+  const ruleItem = document.createElement('div');
+  ruleItem.className = 'rule-item';
+  ruleItem.dataset.pattern = rule.pattern;
+  ruleItem.dataset.proxyId = rule.proxyId;
+  // 添加匹配类型字段，默认为 'url'
+  ruleItem.dataset.matchType = rule.matchType || 'url';
+  
+  const proxyName = rule.proxyId === 'direct' ? '直接连接' : 
+    (proxyConfigs[rule.proxyId] ? proxyConfigs[rule.proxyId].name : '未知代理');
+  
+  // 添加匹配类型图标
+  const matchTypeIcon = rule.matchType === 'host' ? '🏠' : '🔗';
+  
+  ruleItem.innerHTML = `
+    <div class="rule-match-type" title="${rule.matchType === 'host' ? '主机名匹配' : 'URL匹配'}">${matchTypeIcon}</div>
+    <div class="rule-pattern">${rule.pattern}</div>
+    <div class="rule-proxy">${proxyName}</div>
+    <div class="rule-delete">✕</div>
+  `;
+  
+  // 添加删除规则事件
+  ruleItem.querySelector('.rule-delete').addEventListener('click', function(e) {
+    e.stopPropagation();
+    ruleItem.remove();
+  });
+  
+  // 添加编辑规则事件
+  ruleItem.addEventListener('click', function() {
+    editRule(ruleItem);
+  });
+  
+  ruleList.appendChild(ruleItem);
+}
+
+// 编辑规则
+function editRule(ruleItem) {
+  // 获取规则项的索引
+  const ruleItems = document.querySelectorAll('#ruleList .rule-item');
+  currentRuleIndex = Array.from(ruleItems).indexOf(ruleItem);
+  
+  // 填充表单
+  document.getElementById('rulePattern').value = ruleItem.dataset.pattern;
+  
+  // 设置匹配类型
+  const matchType = ruleItem.dataset.matchType || 'url';
+  document.getElementById('ruleMatchType').value = matchType;
+  
+  // 填充代理下拉框
+  populateProxyDropdown('ruleProxy');
+  document.getElementById('ruleProxy').value = ruleItem.dataset.proxyId;
+  
+  // 显示模态框
+  const ruleModal = document.getElementById('ruleModal');
+  ruleModal.classList.remove('hidden');
+  ruleModal.style.display = 'flex';
+}
+
+// 导入规则
+function importRules() {
+  const rulesText = document.getElementById('ruleImport').value.trim();
+  if (!rulesText) {
+    alert('请输入要导入的规则');
+    return;
+  }
+  
+  const lines = rulesText.split('\n');
+  let importedCount = 0;
+  
+  lines.forEach(line => {
+    line = line.trim();
+    // 跳过规则中的空行、注释行
+    if (!line || line.startsWith('!') || line.startsWith('[')) return;
+    
+    // 确定匹配类型，默认为URL匹配
+    let matchType = 'url';
+    let proxyId = document.getElementById('defaultProxy').value;
+
+    // 处理 AutoProxy 格式规则
+
+    // 处理例外规则，强制使用直接连接
+    if (line.startsWith('@@')) {
+      proxyId = 'direct';
+      line = line.substring(2);
+    }
+      
+    if (line.startsWith('||')) {
+      // 例如 ||example.com
+      line = '*' + line.substring(2);
+      matchType = 'host'; // 双竖线通常表示主机名匹配
+    } else if (line.startsWith('|')) {
+      line = line.substring(1) + "*";
+      matchType = 'url'; // 单竖线通常表示URL开头匹配
+    } else if (!line.includes('/')) {
+      // 子域名通配，例如 example.com
+      line = '*' + line;
+      matchType = 'host'
+    } else if (line.length > 1 && line.startsWith('/') && line.endsWith('/')) {
+      // 正则表达式，保留正则表达式
+      line = line
+      matchType = 'url';
+    } else if (line.startsWith('http://') || line.startsWith('https://')) {
+      // 例如 http://example.com
+      line = line + "*"
+      matchType = 'url';
+    }
+
+    // 添加规则
+    addRuleToList({
+      pattern: line,
+      proxyId: proxyId,
+      matchType: matchType
+    });
+    
+    importedCount++;
+  });
+  
+  // 清空导入文本框
+  document.getElementById('ruleImport').value = '';
+  // saveAutoProxyConfig();
+  alert(`成功导入 ${importedCount} 条规则，请注意保存规则配置！`);
+}
+
+// 显示添加自动切换规则表单
+function showAddAutoProxyForm() {
+  // 隐藏其他表单，显示自动代理表单
+  document.getElementById('proxyForm').classList.add('hidden');
+  document.getElementById('welcomeMessage').classList.add('hidden');
+  document.getElementById('autoProxyForm').classList.remove('hidden');
+  
+  // 清除表单数据
+  document.getElementById('autoProxyName').value = '';
+  document.getElementById('ruleList').innerHTML = '';
+  document.getElementById('ruleImport').value = '';
+  
+  // 隐藏删除按钮
+  document.getElementById('deleteAutoProxyBtn').classList.add('hidden');
+  
+  // 填充默认代理下拉框
+  populateProxyDropdown('defaultProxy');
+  
+  // 清除编辑状态
+  editingAutoProxyId = null;
+}
+
+// 隐藏自动代理表单
+function hideAutoProxyForm() {
+  document.getElementById('autoProxyForm').classList.add('hidden');
+  document.getElementById('welcomeMessage').classList.remove('hidden');
+  editingAutoProxyId = null;
+}
+
+// 编辑自动切换规则
+function editAutoProxy(proxyId) {
+  const config = proxyConfigs[proxyId];
+  if (!config || config.type !== 'auto') return;
+  
+  // 设置当前编辑的自动代理ID
+  editingAutoProxyId = proxyId;
+  
+  // 隐藏其他表单，显示自动代理表单
+  document.getElementById('proxyForm').classList.add('hidden');
+  document.getElementById('welcomeMessage').classList.add('hidden');
+  document.getElementById('autoProxyForm').classList.remove('hidden');
+  
+  // 填充表单数据
+  document.getElementById('autoProxyName').value = config.name || '';
+  
+  // 填充默认代理下拉框
+  populateProxyDropdown('defaultProxy');
+  
+  // 设置默认代理
+  document.getElementById('defaultProxy').value = config.defaultProxy || 'direct';
+  
+  // 清空规则列表
+  document.getElementById('ruleList').innerHTML = '';
+  
+  // 添加规则
+  if (config.rules && Array.isArray(config.rules)) {
+    config.rules.forEach(rule => {
+      addRuleToList(rule);
+    });
+  }
+  
+  // 显示删除按钮
+  document.getElementById('deleteAutoProxyBtn').classList.remove('hidden');
+}
+
+// 填充代理下拉框
+function populateProxyDropdown(selectId) {
+  const select = document.getElementById(selectId);
+  
+  // 保存当前选中的值
+  const currentValue = select.value;
+  
+  // 清除现有选项（保留第一个直接连接选项）
+  while (select.options.length > 1) {
+    select.remove(1);
+  }
+  
+  // 添加代理选项
+  for (const proxyId in proxyConfigs) {
+    if (proxyId !== 'direct' && proxyConfigs[proxyId].type !== 'auto') {
+      const option = document.createElement('option');
+      option.value = proxyId;
+      option.textContent = proxyConfigs[proxyId].name;
+      select.appendChild(option);
+    }
+  }
+  
+  // 尝试恢复之前选中的值
+  if (currentValue && Array.from(select.options).some(opt => opt.value === currentValue)) {
+    select.value = currentValue;
+  }
+}
+
+// 保存规则
+function saveRule() {
+  const pattern = document.getElementById('rulePattern').value;
+  const proxyId = document.getElementById('ruleProxy').value;
+  const matchType = document.getElementById('ruleMatchType').value;
+  
+  if (!pattern) {
+    alert('请输入URL模式');
+    return;
+  }
+  
+  console.log('保存规则:', pattern, proxyId, matchType, '当前规则索引:', currentRuleIndex);
+  
+  if (currentRuleIndex >= 0) {
+    // 更新现有规则
+    const ruleItems = document.querySelectorAll('#ruleList .rule-item');
+    if (currentRuleIndex < ruleItems.length) {
+      const ruleItem = ruleItems[currentRuleIndex];
+      ruleItem.dataset.pattern = pattern;
+      ruleItem.dataset.proxyId = proxyId;
+      ruleItem.dataset.matchType = matchType;
+      
+      const proxyName = proxyId === 'direct' ? '直接连接' : 
+        (proxyConfigs[proxyId] ? proxyConfigs[proxyId].name : '未知代理');
+      
+      // 更新匹配类型图标
+      const matchTypeIcon = matchType === 'host' ? '🏠' : '🔗';
+      ruleItem.querySelector('.rule-match-type').innerHTML = matchTypeIcon;
+      ruleItem.querySelector('.rule-match-type').title = matchType === 'host' ? '主机名匹配' : 'URL匹配';
+      
+      ruleItem.querySelector('.rule-pattern').textContent = pattern;
+      ruleItem.querySelector('.rule-proxy').textContent = proxyName;
+    }
+  } else {
+    // 添加新规则
+    addRuleToList({
+      pattern: pattern,
+      proxyId: proxyId,
+      matchType: matchType
+    });
+  }
+  
+  // 隐藏模态框
+  hideRuleModal();
+  // saveAutoProxyConfig();
+}
+
+// 保存自动切换规则
+function saveAutoProxyConfig() {
+  try {
+    const name = document.getElementById('autoProxyName').value.trim();
+    if (!name) {
+      alert('请输入规则名称');
+      return;
+    }
+    
+    // 获取默认代理
+    const defaultProxy = document.getElementById('defaultProxy').value;
+    
+    // 获取规则列表
+    const ruleItems = document.querySelectorAll('#ruleList .rule-item');
+    const rules = [];
+    
+    // 调试信息
+    console.log('规则项数量:', ruleItems.length);
+    
+    ruleItems.forEach(item => {
+      console.log('规则项:', item.dataset.pattern, item.dataset.proxyId, item.dataset.matchType);
+      rules.push({
+        pattern: item.dataset.pattern,
+        proxyId: item.dataset.proxyId,
+        matchType: item.dataset.matchType || 'url' // 确保有默认值
+      });
+    });
+    
+    // 构建配置对象
+    const config = {
+      name: name,
+      type: 'auto',
+      defaultProxy: defaultProxy,
+      rules: rules
+    };
+    
+    console.log('保存的自动代理配置:', config);
+    
+    // 禁用保存按钮，显示保存中状态
+    const saveBtn = document.getElementById('saveAutoProxyBtn');
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = '保存中...';
+    saveBtn.disabled = true;
+    
+    // 设置超时，防止长时间无响应
+    const timeoutId = setTimeout(() => {
+      saveBtn.textContent = originalText;
+      saveBtn.disabled = false;
+      alert('保存超时，请重试');
+    }, 5000);
+    
+    if (editingAutoProxyId) {
+      // 更新现有配置
+      chrome.runtime.sendMessage({
+        action: 'updateProxyConfig',
+        proxyId: editingAutoProxyId,
+        config: config
+      }, function(response) {
+        clearTimeout(timeoutId);
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
+        
+        if (chrome.runtime.lastError) {
+          console.error('更新自动切换规则时出错:', chrome.runtime.lastError);
+          alert('保存失败: ' + chrome.runtime.lastError.message);
+          return;
+        }
+        
+        if (response && response.success) {
+          alert('保存成功');
+          // 检查是否需要刷新当前激活的代理
+          if (activeProxyId === editingAutoProxyId) {
+            chrome.runtime.sendMessage({
+              action: 'setActiveProxy',
+              proxyId: editingAutoProxyId
+            });
+          }
+          
+          // 重新加载代理配置
+          loadProxyConfigs();
+          hideAutoProxyForm();
+        } else {
+          alert('保存失败: ' + (response ? response.error : '未知错误'));
+        }
+      });
+    } else {
+      // 添加新配置
+      chrome.runtime.sendMessage({
+        action: 'addProxyConfig',
+        config: config
+      }, function(response) {
+        clearTimeout(timeoutId);
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
+        
+        if (chrome.runtime.lastError) {
+          console.error('添加自动切换规则时出错:', chrome.runtime.lastError);
+          alert('保存失败: ' + chrome.runtime.lastError.message);
+          return;
+        }
+        
+        if (response && response.success) {
+          // 设置编辑模式为新创建的规则
+          editingAutoProxyId = response.proxyId;
+          
+          // 更新表单标题和删除按钮状态
+          document.getElementById('deleteAutoProxyBtn').classList.remove('hidden');
+          
+          alert('创建成功');
+          
+          // 重新加载代理配置
+          loadProxyConfigs();
+          hideAutoProxyForm();
+        } else {
+          alert('保存失败: ' + (response ? response.error : '未知错误'));
+        }
+      });
+    }
+  } catch (error) {
+    console.error('保存过程中发生错误:', error);
+    alert('保存失败: ' + error.message);
+  }
+}
+
+// 隐藏规则模态框
+function hideRuleModal() {
+  const ruleModal = document.getElementById('ruleModal');
+  ruleModal.classList.add('hidden');
+  ruleModal.style.display = 'none';
+}
+
+// 删除自动切换规则
+function deleteAutoProxyConfig() {
+  if (!editingAutoProxyId) return;
+  
+  if (confirm('确定要删除此自动切换规则吗？')) {
+    chrome.runtime.sendMessage({
+      action: 'deleteProxyConfig',
+      proxyId: editingAutoProxyId
+    }, function(response) {
+      if (response.success) {
+        // 重新加载配置列表
+        loadProxyConfigs();
+        
+        // 隐藏表单
+        hideAutoProxyForm();
+      } else {
+        alert(response.error || '无法删除自动切换规则');
+      }
+    });
+  }
+}
+
+// 显示添加规则模态框
+function showAddRuleModal() {
+  console.log('显示添加规则模态框');
+  
+  // 填充代理下拉框
+  populateProxyDropdown('ruleProxy');
+  
+  // 清空输入
+  document.getElementById('rulePattern').value = '';
+  
+  // 显示模态框
+  const ruleModal = document.getElementById('ruleModal');
+  ruleModal.classList.remove('hidden');
+  ruleModal.style.display = 'flex';
+  
+  // 设置当前规则索引为-1（表示添加新规则）
+  currentRuleIndex = -1;
 } 

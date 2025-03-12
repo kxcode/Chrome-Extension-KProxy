@@ -11,8 +11,8 @@
     <header>
       <h1>KProxy</h1>
       <div class="actions">
-        <button id="importBtn">导入</button>
-        <button id="exportBtn">导出</button>
+        <button id="importBtn">导入配置</button>
+        <button id="exportBtn">导出配置</button>
       </div>
     </header>
     
@@ -22,6 +22,7 @@
           <div class="loading">加载中...</div>
         </div>
         <button id="addProxyBtn" class="add-btn">添加代理</button>
+        <button id="addAutoProxyBtn" class="add-btn auto-proxy-btn">添加自动切换规则</button>
       </div>
       
       <div class="content">
@@ -59,9 +60,70 @@
           </div>
         </div>
         
+        <div id="autoProxyForm" class="proxy-form hidden">
+          <h2>自动切换规则</h2>
+          
+          <div class="form-group">
+            <label for="autoProxyName">规则名称</label>
+            <input type="text" id="autoProxyName" placeholder="输入规则名称">
+          </div>
+          
+          <div class="form-group">
+            <label for="defaultProxy">默认代理</label>
+            <select id="defaultProxy">
+              <option value="direct">直接连接</option>
+              <!-- 其他代理选项将通过 JavaScript 动态添加 -->
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>规则列表</label>
+            <div class="rule-list-container">
+              <div class="rule-list" id="ruleList">
+                <!-- 规则项将通过 JavaScript 动态添加 -->
+              </div>
+            </div>
+            <div class="rule-actions">
+              <button id="addRuleBtn" class="small-btn">添加规则</button>
+            </div>
+          </div>
+          
+          
+          <div class="form-group">
+            <label for="ruleImport">批量导入规则（AutoProxy）</label>
+            <textarea id="ruleImport" placeholder="每行一个规则，格式：域名或URL模式，导入的规则将使用当前选择的默认代理"></textarea>
+            
+            <div class="rule-import-actions">
+              <span class="rule-format-hint">支持通配符 * 和部分 AutoProxy 格式</span>
+              <button id="importRulesBtn" class="small-btn">批量导入</button>
+            </div>
+
+            <div class="rule-import-help">
+              <h4>支持的规则格式：</h4>
+              <ul>
+                <li><code>example.com</code> - 匹配域名</li>
+                <li><code>*.example.com</code> - 匹配子域名</li>
+                <li><code>*.example.com/*</code> - 匹配子域名及其所有路径</li>
+                <li><code>example.com/path/*</code> - 匹配特定路径</li>
+                <li><code>||example.com</code> - AutoProxy 格式，等同于 <code>*.example.com/*</code></li>
+                <li><code>|https://example.com</code> - AutoProxy 格式，等同于 <code>https://example.com*</code></li>
+              </ul>
+              <p class="rule-import-note">注意：导入的规则将使用当前选择的默认代理。导入后可以单独编辑每条规则的代理设置。</p>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button id="saveAutoProxyBtn">保存自动代理规则</button>
+            <button id="cancelAutoProxyBtn">取消</button>
+            <button id="deleteAutoProxyBtn" class="delete-btn hidden">删除</button>
+          </div>
+        </div>
+        
         <div id="welcomeMessage" class="welcome-message">
           <h2>欢迎使用 KProxy</h2>
           <p>请从左侧选择一个代理配置进行编辑，或者添加一个新的代理配置。</p>
+          <br>
+          <p>使用过程中有任何问题或建议，请前往 <a href="https://github.com/kxcode/Chrome-Extension-KProxy" target="_blank">GitHub</a> 反馈</p>
         </div>
       </div>
     </div>
@@ -79,6 +141,37 @@
       <div class="modal-actions">
         <button id="confirmImportBtn">导入</button>
         <button id="cancelImportBtn">取消</button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="ruleModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>添加规则</h2>
+      <div class="form-group">
+        <label for="rulePattern">URL 模式（注意添加 * 通配符，否则为精确匹配）</label>
+        <input type="text" id="rulePattern" placeholder="例如: *.example.com*">
+      </div>
+      <div class="form-group">
+        <label for="ruleMatchType">匹配类型</label>
+        <select id="ruleMatchType">
+          <option value="url">URL匹配</option>
+          <option value="host">主机名匹配</option>
+        </select>
+        <div class="match-type-hint">
+          <p>URL匹配: 匹配完整URL，包括协议、域名和路径</p>
+          <p>主机名匹配: 仅匹配域名部分，忽略协议和路径</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="ruleProxy">使用代理</label>
+        <select id="ruleProxy">
+          <!-- 代理选项将通过 JavaScript 动态添加 -->
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button id="saveRuleBtn">保存</button>
+        <button id="cancelRuleBtn">取消</button>
       </div>
     </div>
   </div>

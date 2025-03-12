@@ -400,4 +400,221 @@ textarea:focus {
 /* 隐藏类 */
 .hidden {
   display: none !important;
+}
+
+/* AutoProxy 相关样式 */
+.auto-proxy-btn {
+  background-color: #7c6bff;
+  margin-top: 12px;
+}
+
+.auto-proxy-btn:hover {
+  background-color: #6b5aff;
+}
+
+.rule-list-container {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.rule-list {
+  padding: 8px;
+}
+
+.rule-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.rule-item:hover {
+  background-color: #f8f9ff;
+  border-color: #d4daff;
+}
+
+.rule-pattern {
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 13px;
+  color: #424242;
+}
+
+.rule-proxy {
+  margin: 0 12px;
+  font-size: 13px;
+  color: #6b7cff;
+  font-weight: 500;
+}
+
+.rule-actions {
+  padding-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  /* background-color: #f0f0f0; */
+  /* border-bottom-left-radius: 8px; */
+  /* border-bottom-right-radius: 8px; */
+}
+
+.rule-delete {
+  color: #ff6b6b;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.rule-delete:hover {
+  background-color: #ffeeee;
+}
+
+.small-btn {
+  background-color: #6b7cff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.small-btn:hover {
+  background-color: #5a6bff;
+}
+
+.rule-import-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.rule-format-hint {
+  margin-left: 12px;
+  margin-right: 12px;
+  font-size: 12px;
+  color: #757575;
+}
+
+.proxy-item-icon.auto {
+  background-color: #e6e0ff;
+}
+
+.proxy-item.active .proxy-item-icon.auto {
+  background-color: #d4c6ff;
+}
+
+/* 规则模态框样式 */
+#ruleModal .modal-content {
+  width: 400px;
+}
+
+/* 拖拽排序样式 */
+.rule-item.dragging {
+  opacity: 0.5;
+  border: 2px dashed #6b7cff;
+}
+
+.rule-item.drag-over {
+  border-top: 2px solid #6b7cff;
+}
+
+/* 自动切换规则项样式 */
+.proxy-item.auto-proxy .proxy-item-icon {
+  background-color: #e6e0ff;
+}
+
+.proxy-item.auto-proxy.active .proxy-item-icon {
+  background-color: #d4c6ff;
+}
+
+/* 规则导入帮助样式 */
+.rule-import-help {
+  margin-top: 8px;
+  padding: 12px;
+  background-color: #f5f7ff;
+  border: 1px solid #e0e6ff;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #424242;
+  max-height: 210px;
+  /* overflow-y: auto; */
+}
+
+.rule-import-help h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #6b7cff;
+}
+
+.rule-import-help ul {
+  margin: 0 0 12px 0;
+  padding-left: 20px;
+}
+
+.rule-import-help li {
+  margin-bottom: 4px;
+}
+
+.rule-import-help code {
+  background-color: #e6e0ff;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.rule-import-help pre {
+  background-color: white;
+  padding: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 12px;
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
+
+.rule-import-note {
+  font-style: italic;
+  color: #757575;
+  margin-top: 8px;
+}
+
+/* 调整导入文本框的高度 */
+#ruleImport {
+  min-height: 100px;
+}
+
+/* 规则匹配类型图标样式 */
+.rule-match-type {
+  margin-right: 8px;
+  font-size: 16px;
+  width: 24px;
+  text-align: center;
+  cursor: help;
+}
+
+/* 匹配类型提示样式 */
+.match-type-hint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #757575;
+  background-color: #f5f7ff;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #e0e6ff;
+}
+
+.match-type-hint p {
+  margin: 4px 0;
 } 
