@@ -1,22 +1,5 @@
-# KProxy Chrome 代理插件
+**KProxy: Chrome Proxy Manager**
 
-一个简洁优雅的 Chrome 代理管理工具，可以实现以下功能：
-
-- 设置代理服务器地址和端口
-- 配置代理类型（HTTP、HTTPS、SOCKS5）
-- 快速切换不同代理配置
-- 支持自动切换代理
-- 符合 Chrome 的 Manifest V3 标准
-
-
-## AutoProxy 功能
-
-KProxy 支持根据网址自动选择不同的代理服务器，支持自动切换模式：
-
-1. 创建自动切换规则组
-2. 设置默认代理（当没有匹配规则时使用）
-3. 添加 URL 匹配规则，支持通配符（如 *.example.com/*）
-4. 支持导入 AutoProxy 格式的规则列表
-5. 支持两种匹配模式：
-   - URL匹配：匹配完整URL，包括协议、域名和路径
-   - 主机名匹配：仅匹配域名部分，忽略协议和路径
+*   Effortlessly manage and switch between HTTP, HTTPS, and SOCKS5 proxies.
+*   Automatically switch proxies based on website (URL/hostname matching).
+*   Import AutoProxy rule lists.
