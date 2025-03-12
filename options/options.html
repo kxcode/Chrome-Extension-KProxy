@@ -101,7 +101,7 @@
             <div class="rule-import-help">
               <h4>支持的规则格式：</h4>
               <ul>
-                <li><code>example.com</code> - 匹配域名</li>
+                <li><code>example.com</code> - 精确匹配域名，如果是 AutoProxy 导入，则匹配所有子域名</li>
                 <li><code>*.example.com</code> - 匹配子域名</li>
                 <li><code>*.example.com/*</code> - 匹配子域名及其所有路径</li>
                 <li><code>example.com/path/*</code> - 匹配特定路径</li>
@@ -120,10 +120,12 @@
         </div>
         
         <div id="welcomeMessage" class="welcome-message">
-          <h2>欢迎使用 KProxy</h2>
-          <p>请从左侧选择一个代理配置进行编辑，或者添加一个新的代理配置。</p>
-          <br>
-          <p>使用过程中有任何问题或建议，请前往 <a href="https://github.com/kxcode/Chrome-Extension-KProxy" target="_blank">GitHub</a> 反馈</p>
+          <div class="welcome-content">
+            <h2>欢迎使用 KProxy</h2>
+            <p>请从左侧选择一个代理配置进行编辑，或者添加一个新的代理配置。</p>
+            <br>
+            <p>使用过程中有任何问题或建议，请前往 <a href="https://github.com/kxcode/Chrome-Extension-KProxy" target="_blank">GitHub</a> 反馈</p>
+          </div>
         </div>
       </div>
     </div>
@@ -149,8 +151,12 @@
     <div class="modal-content">
       <h2>添加规则</h2>
       <div class="form-group">
-        <label for="rulePattern">URL 模式（注意添加 * 通配符，否则为精确匹配）</label>
+        <label for="rulePattern">匹配条件</label>
         <input type="text" id="rulePattern" placeholder="例如: *.example.com*">
+        <div class="match-type-hint">
+          <p>支持 * 通配符，如无通配符则为精确匹配</p>
+          <p>前后加上 / 则为正则匹配，例如 /(.*\.)?example\.com/</p>
+        </div>
       </div>
       <div class="form-group">
         <label for="ruleMatchType">匹配类型</label>

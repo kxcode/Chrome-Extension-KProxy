@@ -237,7 +237,16 @@ select:focus {
 }
 
 .welcome-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
   text-align: center;
+  padding: 0;
+}
+
+.welcome-content {
   padding: 40px 20px;
 }
 

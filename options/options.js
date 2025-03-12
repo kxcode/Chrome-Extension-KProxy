@@ -659,7 +659,7 @@ function importRules() {
       matchType = 'url'; // 单竖线通常表示URL开头匹配
     } else if (!line.includes('/')) {
       // 子域名通配，例如 example.com
-      line = '*' + line;
+      line = '/(.*\\.)?' + line.replace('.', '\\.') + '/';
       matchType = 'host'
     } else if (line.length > 1 && line.startsWith('/') && line.endsWith('/')) {
       // 正则表达式，保留正则表达式
