@@ -267,6 +267,24 @@ function showAddProxyForm() {
   currentProxyId = null;
 }
 
+function toggleProxyFormGroupDisplay(show){
+  if(!show){
+    // 隐藏不需要的表单组
+    const formGroups = document.querySelectorAll('.form-group');
+    formGroups.forEach((group, index) => {
+    if (index > 0) { // 保留名称字段
+        group.style.display = 'none';
+      }
+    });
+  }else{
+    // 显示所有表单组
+    const formGroups = document.querySelectorAll('.form-group');
+    formGroups.forEach(group => {
+      group.style.display = 'flex';
+    });
+  }
+}
+
 // 编辑代理
 function editProxy(proxyId) {
   const config = proxyConfigs[proxyId];
@@ -286,13 +304,7 @@ function editProxy(proxyId) {
   
   // 如果是直接连接
   if (config.type === 'direct') {
-    // 隐藏不需要的表单组
-    const formGroups = document.querySelectorAll('.form-group');
-    formGroups.forEach((group, index) => {
-      if (index > 0) { // 保留名称字段
-        group.style.display = 'none';
-      }
-    });
+    toggleProxyFormGroupDisplay(false);
     
     // 填充名称
     document.getElementById('proxyName').value = config.name;
@@ -320,10 +332,7 @@ function editProxy(proxyId) {
     }
     
     // 显示所有表单组
-    const formGroups = document.querySelectorAll('.form-group');
-    formGroups.forEach(group => {
-      group.style.display = 'flex';
-    });
+    toggleProxyFormGroupDisplay(true);
     
     // 填充表单数据
     document.getElementById('proxyName').value = config.name;
@@ -640,7 +649,7 @@ function importRules() {
     
     // 确定匹配类型，默认为URL匹配
     let matchType = 'url';
-    let proxyId = document.getElementById('defaultProxy').value;
+    let proxyId = document.getElementById('ruleImportProxy').value;
 
     // 处理 AutoProxy 格式规则
 
@@ -689,6 +698,8 @@ function importRules() {
 
 // 显示添加自动切换规则表单
 function showAddAutoProxyForm() {
+  toggleProxyFormGroupDisplay(true);
+
   // 隐藏其他表单，显示自动代理表单
   document.getElementById('proxyForm').classList.add('hidden');
   document.getElementById('welcomeMessage').classList.add('hidden');
@@ -704,6 +715,7 @@ function showAddAutoProxyForm() {
   
   // 填充默认代理下拉框
   populateProxyDropdown('defaultProxy');
+  populateProxyDropdown('ruleImportProxy');
   
   // 清除编辑状态
   editingAutoProxyId = null;
@@ -724,6 +736,8 @@ function editAutoProxy(proxyId) {
   // 设置当前编辑的自动代理ID
   editingAutoProxyId = proxyId;
   
+  toggleProxyFormGroupDisplay(true);
+
   // 隐藏其他表单，显示自动代理表单
   document.getElementById('proxyForm').classList.add('hidden');
   document.getElementById('welcomeMessage').classList.add('hidden');
@@ -734,9 +748,15 @@ function editAutoProxy(proxyId) {
   
   // 填充默认代理下拉框
   populateProxyDropdown('defaultProxy');
+  populateProxyDropdown('ruleImportProxy');
   
   // 设置默认代理
   document.getElementById('defaultProxy').value = config.defaultProxy || 'direct';
+  
+  // 设置导入规则代理（如果存在）
+  if (config.ruleImportProxy) {
+    document.getElementById('ruleImportProxy').value = config.ruleImportProxy;
+  }
   
   // 清空规则列表
   document.getElementById('ruleList').innerHTML = '';
@@ -766,6 +786,7 @@ function populateProxyDropdown(selectId) {
   
   // 添加代理选项
   for (const proxyId in proxyConfigs) {
+    // alert(selectId+"添加代理选项"+proxyId)
     if (proxyId !== 'direct' && proxyConfigs[proxyId].type !== 'auto') {
       const option = document.createElement('option');
       option.value = proxyId;
@@ -839,6 +860,9 @@ function saveAutoProxyConfig() {
     // 获取默认代理
     const defaultProxy = document.getElementById('defaultProxy').value;
     
+    // 获取导入规则代理
+    const ruleImportProxy = document.getElementById('ruleImportProxy').value;
+    
     // 获取规则列表
     const ruleItems = document.querySelectorAll('#ruleList .rule-item');
     const rules = [];
@@ -860,6 +884,7 @@ function saveAutoProxyConfig() {
       name: name,
       type: 'auto',
       defaultProxy: defaultProxy,
+      ruleImportProxy: ruleImportProxy, // 保存导入规则代理设置
       rules: rules
     };
     

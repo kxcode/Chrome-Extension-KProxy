@@ -91,8 +91,14 @@
           
           <div class="form-group">
             <label for="ruleImport">批量导入规则（AutoProxy）</label>
+            <div class="form-group">
+              <label for="ruleImportProxy">导入规则使用的代理</label>
+              <select id="ruleImportProxy">
+                <option value="direct">直接连接</option>
+                <!-- 其他代理选项将通过 JavaScript 动态添加 -->
+              </select>
+            </div>
             <textarea id="ruleImport" placeholder="每行一个规则，格式：域名或URL模式，导入的规则将使用当前选择的默认代理"></textarea>
-            
             <div class="rule-import-actions">
               <span class="rule-format-hint">支持通配符 * 和部分 AutoProxy 格式</span>
               <button id="importRulesBtn" class="small-btn">批量导入</button>
