@@ -668,7 +668,7 @@ function importRules() {
       matchType = 'url'; // 单竖线通常表示URL开头匹配
     } else if (!line.includes('/')) {
       // 子域名通配，例如 example.com
-      line = '/(.*\\.)?' + line.replace('.', '\\.') + '/';
+      line = '/(.*\\.)?' + line.replace(/\./g, '\\.') + '/';
       matchType = 'host'
     } else if (line.length > 1 && line.startsWith('/') && line.endsWith('/')) {
       // 正则表达式，保留正则表达式
@@ -921,7 +921,7 @@ function saveAutoProxyConfig() {
         }
         
         if (response && response.success) {
-          alert('保存成功');
+          // alert('保存成功');
           // 检查是否需要刷新当前激活的代理
           if (activeProxyId === editingAutoProxyId) {
             chrome.runtime.sendMessage({

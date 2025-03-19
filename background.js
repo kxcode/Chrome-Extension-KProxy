@@ -220,7 +220,7 @@ function generatePacScript(autoConfig, proxyConfigs) {
     function FindProxyForURL(url, host) {
       url = url.toLowerCase();
       host = host.toLowerCase();
-      
+
       function regExpMatch(str, pattern) {
         try {
           return new RegExp(pattern).test(str);
@@ -242,7 +242,13 @@ function generatePacScript(autoConfig, proxyConfigs) {
       proxyString = 'DIRECT';
     } else {
       const type = proxyConfig.type.toUpperCase();
-      proxyString = `${type} ${proxyConfig.host}:${proxyConfig.port}`;
+      if (type === 'HTTP' || type === 'HTTPS')
+      {
+        proxyString = `PROXY ${proxyConfig.host}:${proxyConfig.port}`;
+      } else {
+        proxyString = `${type} ${proxyConfig.host}:${proxyConfig.port}`;
+      }
+      
     }
 
     // 检查是否是正则表达式模式 (/pattern/)
