@@ -61,7 +61,10 @@
         </div>
         
         <div id="autoProxyForm" class="proxy-form hidden">
-          <h2>自动切换规则</h2>
+          <h2 style="display: flex; justify-content: space-between; align-items: center;">
+            自动切换规则
+            <button id="deleteAutoProxyBtn" class="delete-btn">删除</button>
+          </h2>
           
           <div class="form-group">
             <label for="autoProxyName">规则名称</label>
@@ -75,6 +78,8 @@
               <!-- 其他代理选项将通过 JavaScript 动态添加 -->
             </select>
           </div>
+
+          
           
           <div class="form-group">
             <label>规则列表</label>
@@ -84,10 +89,14 @@
               </div>
             </div>
             <div class="rule-actions">
+              <button id="saveAutoProxyBtn" class="small-btn">保存规则列表 Save</button>
               <button id="addRuleBtn" class="small-btn">添加规则</button>
             </div>
           </div>
           
+          <!-- <div class="form-actions">
+            <button id="cancelAutoProxyBtn">取消</button>
+          </div> -->
           
           <div class="form-group">
             <label for="ruleImport">批量导入规则（AutoProxy）</label>
@@ -118,11 +127,7 @@
             </div>
           </div>
           
-          <div class="form-actions">
-            <button id="saveAutoProxyBtn">保存自动代理规则</button>
-            <button id="cancelAutoProxyBtn">取消</button>
-            <button id="deleteAutoProxyBtn" class="delete-btn hidden">删除</button>
-          </div>
+          
         </div>
         
         <div id="welcomeMessage" class="welcome-message">
@@ -130,14 +135,14 @@
             <h2>欢迎使用 KProxy</h2>
             <p>请从左侧选择一个代理配置进行编辑，或者添加一个新的代理配置。</p>
             <br>
-            <p>使用过程中有任何问题或建议，请前往 <a href="https://github.com/kxcode/Chrome-Extension-KProxy" target="_blank">GitHub</a> 反馈</p>
+            <p>使用过程中有任何问题或建议，请前往 <a href="https://github.com/kxcode/Chrome-Extension-KProxy" target="_blank" style="text-decoration: none;">GitHub</a> 反馈</p>
           </div>
         </div>
       </div>
     </div>
     
     <div class="footer">
-      <span>KProxy v1.0.0 | 由 <a href="#" id="authorLink">KINGX</a> 精心设计</span>
+      <span>KProxy v1.0.0 | 由 <a href="http://www.github.com/kxcode" id="authorLink">KINGX</a> 精心设计</span>
     </div>
   </div>
   
@@ -187,6 +192,8 @@
       </div>
     </div>
   </div>
+  
+  <div id="toastContainer" class="toast-container"></div>
   
   <script src="options.js"></script>
 </body>

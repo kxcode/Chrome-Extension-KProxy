@@ -3,6 +3,38 @@ let activeProxyId = null;
 let proxyConfigs = {};
 let editingAutoProxyId = null;
 
+// 显示提示消息
+function showToast(message, type = 'success') {
+  const toastContainer = document.getElementById('toastContainer');
+  
+  // 创建 toast 元素
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  
+  // 设置图标
+  const icon = type === 'success' ? '' : '';
+  
+  // 设置内容
+  // toast.innerHTML = `
+  //   <div class="toast-icon">${icon}</div>
+  //   <div class="toast-message">${message}</div>
+  // `;
+
+  toast.innerHTML = `
+    <div class="toast-message">${message}</div>
+  `;
+  
+  // 添加到容器
+  toastContainer.appendChild(toast);
+  
+  // 定时移除
+  setTimeout(() => {
+    toast.addEventListener('animationend', function() {
+      toast.remove();
+    });
+  }, 3000);
+}
+
 function initOptionsPage() {
   // 确保导入模态窗口默认隐藏
   const importModal = document.getElementById('importModal');
@@ -635,7 +667,7 @@ function editRule(ruleItem) {
 function importRules() {
   const rulesText = document.getElementById('ruleImport').value.trim();
   if (!rulesText) {
-    alert('请输入要导入的规则');
+    showToast('请输入要导入的规则', 'error');
     return;
   }
   
@@ -692,8 +724,13 @@ function importRules() {
   
   // 清空导入文本框
   document.getElementById('ruleImport').value = '';
-  // saveAutoProxyConfig();
-  alert(`成功导入 ${importedCount} 条规则，请注意保存规则配置！`);
+  
+  // 显示导入成功提示
+  if (importedCount > 0) {
+    showToast(`成功导入 ${importedCount} 条规则，请点击保存规则列表按钮保存`);
+  } else {
+    showToast('没有导入任何规则', 'error');
+  }
 }
 
 // 显示添加自动切换规则表单
@@ -808,7 +845,7 @@ function saveRule() {
   const matchType = document.getElementById('ruleMatchType').value;
   
   if (!pattern) {
-    alert('请输入URL模式');
+    showToast('请输入URL模式', 'error');
     return;
   }
   
@@ -833,6 +870,8 @@ function saveRule() {
       
       ruleItem.querySelector('.rule-pattern').textContent = pattern;
       ruleItem.querySelector('.rule-proxy').textContent = proxyName;
+      
+      showToast('规则已更新');
     }
   } else {
     // 添加新规则
@@ -841,11 +880,12 @@ function saveRule() {
       proxyId: proxyId,
       matchType: matchType
     });
+    
+    showToast('规则已添加');
   }
   
   // 隐藏模态框
   hideRuleModal();
-  // saveAutoProxyConfig();
 }
 
 // 保存自动切换规则
@@ -916,12 +956,14 @@ function saveAutoProxyConfig() {
         
         if (chrome.runtime.lastError) {
           console.error('更新自动切换规则时出错:', chrome.runtime.lastError);
-          alert('保存失败: ' + chrome.runtime.lastError.message);
+          showToast('保存失败: ' + chrome.runtime.lastError.message, 'error');
           return;
         }
         
         if (response && response.success) {
-          // alert('保存成功');
+          // 显示保存成功提示
+          showToast('规则列表保存成功');
+          
           // 检查是否需要刷新当前激活的代理
           if (activeProxyId === editingAutoProxyId) {
             chrome.runtime.sendMessage({
@@ -930,11 +972,10 @@ function saveAutoProxyConfig() {
             });
           }
           
-          // 重新加载代理配置
-          loadProxyConfigs();
-          hideAutoProxyForm();
+          // 重新加载代理配置但不隐藏表单
+          reloadProxyConfigsQuietly();
         } else {
-          alert('保存失败: ' + (response ? response.error : '未知错误'));
+          showToast('保存失败: ' + (response ? response.error : '未知错误'), 'error');
         }
       });
     } else {
@@ -949,7 +990,7 @@ function saveAutoProxyConfig() {
         
         if (chrome.runtime.lastError) {
           console.error('添加自动切换规则时出错:', chrome.runtime.lastError);
-          alert('保存失败: ' + chrome.runtime.lastError.message);
+          showToast('保存失败: ' + chrome.runtime.lastError.message, 'error');
           return;
         }
         
@@ -960,19 +1001,19 @@ function saveAutoProxyConfig() {
           // 更新表单标题和删除按钮状态
           document.getElementById('deleteAutoProxyBtn').classList.remove('hidden');
           
-          alert('创建成功');
+          // 显示保存成功提示
+          showToast('规则列表创建成功');
           
-          // 重新加载代理配置
-          loadProxyConfigs();
-          hideAutoProxyForm();
+          // 重新加载代理配置但不隐藏表单
+          reloadProxyConfigsQuietly();
         } else {
-          alert('保存失败: ' + (response ? response.error : '未知错误'));
+          showToast('保存失败: ' + (response ? response.error : '未知错误'), 'error');
         }
       });
     }
   } catch (error) {
     console.error('保存过程中发生错误:', error);
-    alert('保存失败: ' + error.message);
+    showToast('保存失败: ' + error.message, 'error');
   }
 }
 
@@ -1022,4 +1063,16 @@ function showAddRuleModal() {
   
   // 设置当前规则索引为-1（表示添加新规则）
   currentRuleIndex = -1;
+}
+
+// 重新加载代理配置而不影响界面状态
+function reloadProxyConfigsQuietly() {
+  chrome.runtime.sendMessage({ action: 'getProxyConfigs' }, function(response) {
+    proxyConfigs = response.proxyConfigs;
+    const activeProxy = response.activeProxy;
+    activeProxyId = activeProxy;
+    
+    // 静默更新，不影响当前界面
+    console.log('静默更新代理配置完成');
+  });
 } 

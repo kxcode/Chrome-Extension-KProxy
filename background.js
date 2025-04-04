@@ -35,6 +35,13 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
+// 监听浏览器启动事件
+chrome.runtime.onStartup.addListener(() => {
+  console.log('浏览器已启动，应用活动代理配置');
+  // 应用当前活动的代理配置，这将同时更新图标徽章
+  applyActiveProxyConfig();
+});
+
 // 监听来自弹出窗口和选项页面的消息
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log('收到消息:', request.action, request);
