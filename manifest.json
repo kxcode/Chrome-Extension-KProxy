@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "KProxy",
   "version": "1.0.0",
-  "description": "Simple and elegant proxy management for Chrome",
+  "description": "Simple Easy Stylish Proxy Manager for Chrome",
   "author": "KINGX",
   "action": {
     "default_popup": "popup/popup.html"
@@ -14,7 +14,11 @@
   "permissions": [
     "proxy",
     "storage",
-    "notifications"
+    "notifications",
+    "webRequest",
+    "webRequestAuthProvider",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess"
   ],
   "host_permissions": [
     "<all_urls>"

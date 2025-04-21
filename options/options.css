@@ -647,7 +647,7 @@ textarea:focus {
   margin-bottom: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   animation: toast-slide-in 0.3s, toast-fade-out 0.5s 2.5s forwards;
-  max-width: 300px;
+  max-width: 500px;
 }
 
 .toast.error {

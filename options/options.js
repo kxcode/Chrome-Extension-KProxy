@@ -32,7 +32,7 @@ function showToast(message, type = 'success') {
     toast.addEventListener('animationend', function() {
       toast.remove();
     });
-  }, 3000);
+  }, 5000);
 }
 
 function initOptionsPage() {
@@ -727,7 +727,7 @@ function importRules() {
   
   // 显示导入成功提示
   if (importedCount > 0) {
-    showToast(`成功导入 ${importedCount} 条规则，请点击保存规则列表按钮保存`);
+    showToast(`成功导入 ${importedCount} 条规则，请手工保存规则列表`);
   } else {
     showToast('没有导入任何规则', 'error');
   }
