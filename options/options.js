@@ -727,7 +727,8 @@ function importRules() {
   
   // 显示导入成功提示
   if (importedCount > 0) {
-    showToast(`成功导入 ${importedCount} 条规则，请手工保存规则列表`);
+    showToast(`成功导入 ${importedCount} 条规则，正在保存规则列表...`);
+    saveAutoProxyConfig()
   } else {
     showToast('没有导入任何规则', 'error');
   }
@@ -886,6 +887,8 @@ function saveRule() {
   
   // 隐藏模态框
   hideRuleModal();
+
+  saveAutoProxyConfig()
 }
 
 // 保存自动切换规则

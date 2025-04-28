@@ -467,7 +467,7 @@ textarea:focus {
 .rule-actions {
   padding-top: 8px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   /* background-color: #f0f0f0; */
   /* border-bottom-left-radius: 8px; */
   /* border-bottom-right-radius: 8px; */
@@ -689,6 +689,7 @@ textarea:focus {
   background-color: #6bbd6e;
   color: white;
   font-weight: 500;
+  display: none; /* Hide the save button */
 }
 
 #saveAutoProxyBtn:hover {
