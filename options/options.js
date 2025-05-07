@@ -630,6 +630,7 @@ function addRuleToList(rule) {
   ruleItem.querySelector('.rule-delete').addEventListener('click', function(e) {
     e.stopPropagation();
     ruleItem.remove();
+    saveAutoProxyConfig()
   });
   
   // 添加编辑规则事件
